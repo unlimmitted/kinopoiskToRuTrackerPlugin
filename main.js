@@ -1,36 +1,54 @@
-function addRefButton() {
-	const container = document.getElementsByClassName("style_item__coMvy")[0]
-	let filmTitle = document
+const ruTrackerLogoUrl = "https://i.imgur.com/9fWeWZk.png"
+
+function getContentTitle() {
+	return document
 		.querySelectorAll('h1[class^="styles_title__"], h1[class*=" styles_title__"]')[0].textContent
-	let trackerUrl = `https://rutracker.net/forum/tracker.php?nm=${filmTitle}`
-	createRefBtn(trackerUrl, container)
 }
 
-function createRefBtn(url, container) {
-	let refContainer = document.createElement("a")
-	refContainer.setAttribute("class", "styles_root__b5Uwf styles_rootLight__5uLlo")
-	refContainer.setAttribute("id", "refContainer")
-	refContainer.setAttribute("href", url)
-	refContainer.setAttribute("target", "_blank")
-	refContainer.style.marginLeft = "10px"
+function ruTrackerLink(hrefUrl, container) {
+	let linkDiv = document.createElement("div")
+	linkDiv.setAttribute("class", "style_root__eFFBv")
+	linkDiv.setAttribute("id", "RuTrackerLink")
 
-	let spanLogo = document.createElement("span")
-	spanLogo.setAttribute("class", "styles_logo__SNt5e")
+	let linkBtn = document.createElement("a")
+	linkBtn.setAttribute("href", hrefUrl)
+	linkBtn.setAttribute("class", "style_button__PNtXT style_buttonSize52__b5OBe style_buttonPrimary__ndPAb style_buttonDark__beFpy style_withIconLeft___Myt9 style_onlyIcon__H_eUb")
+	linkBtn.setAttribute("target", "_blank")
 
-	let logo = document.createElement("img")
-	logo.setAttribute("src", "https://i.imgur.com/6rjNwvJ.jpeg")
-	logo.style.width = "32px"
-	logo.style.height = "32px"
+	let iconSpan = document.createElement("span")
+	iconSpan.setAttribute("class", "style_iconLeft__Kq1ig")
 
-	let text = document.createElement("span")
-	text.setAttribute("class", "styles_title__434hO")
-	text.textContent = "RuTracker"
+	let icon = document.createElement("img")
+	icon.setAttribute("src", ruTrackerLogoUrl)
+	icon.style.width = "25px"
+	icon.style.height = "25px"
 
-	spanLogo.appendChild(logo)
-	refContainer.appendChild(spanLogo)
-	refContainer.appendChild(text)
+	iconSpan.appendChild(icon)
+	linkBtn.appendChild(iconSpan)
+	linkDiv.appendChild(linkBtn)
 
-	container.appendChild(refContainer)
+	container.appendChild(linkDiv)
 }
 
-addRefButton()
+let intervalId;
+
+async function asyncOperation(container) {
+	let contentTitle = getContentTitle()
+	let trackerUrl = `https://rutracker.net/forum/tracker.php?nm=${contentTitle}`
+	if (!document.getElementById("RuTrackerLink")){
+		ruTrackerLink(trackerUrl, container)
+	}
+	await new Promise(resolve => setTimeout(resolve, 2000));
+}
+
+function startAsyncLoop() {
+	intervalId = setInterval(async () => {
+		const container = document.querySelectorAll(
+			'div[class^="styles_buttonsContainer__"], div[class*=" styles_buttonsContainer__"]')[0]
+		if (container) {
+			await asyncOperation(container);
+		}
+	}, 1000)
+}
+
+startAsyncLoop()
